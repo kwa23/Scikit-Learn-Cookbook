@@ -9,41 +9,6 @@ For every chapter of the book there is one Jupyter notebook that (1) reproduces 
 
 ---
 
-## Table of contents
-
-1. [Progress](#progress)
-2. [Repository structure](#repository-structure)
-3. [How each notebook is organised](#how-each-notebook-is-organised)
-4. [Getting started](#getting-started)
-5. [Chapter summaries](#chapter-summaries)
-   - [Chapter 1: Common Conventions and API Elements of scikit-learn](#chapter-1-common-conventions-and-api-elements-of-scikit-learn)
-   - [Chapter 2: Pre-Model Workflow and Data Preprocessing](#chapter-2-pre-model-workflow-and-data-preprocessing)
-   - [Chapter 3: Dimensionality Reduction Techniques](#chapter-3-dimensionality-reduction-techniques)
-   - [Chapter 4: Building Models with Distance Metrics and Nearest Neighbors](#chapter-4-building-models-with-distance-metrics-and-nearest-neighbors)
-   - [Chapter 5: Linear Models and Regularization](#chapter-5-linear-models-and-regularization)
-6. [Lessons that repeat across chapters](#lessons-that-repeat-across-chapters)
-7. [Reference](#reference)
-
----
-
-## Progress
-
-| Chapter | Title | Notebook | Status |
-|:-------:|-------|----------|:------:|
-| 1 | Common Conventions and API Elements of scikit-learn | [`ch01_sklearn_api.ipynb`](01-common-conventions-and-api-elements/ch01_sklearn_api.ipynb) | ✅ |
-| 2 | Pre-Model Workflow and Data Preprocessing | [`ch02_data_preprocessing.ipynb`](02-pre-model-workflow-and-data-preprocessing/ch02_data_preprocessing.ipynb) | ✅ |
-| 3 | Dimensionality Reduction Techniques | [`ch03_dimensionality_reduction.ipynb`](03-dimensionality-reduction-techniques/ch03_dimensionality_reduction.ipynb) | ✅ |
-| 4 | Building Models with Distance Metrics and Nearest Neighbors | [`ch04_knn_distance_metrics.ipynb`](04-distance-metrics-and-nearest-neighbors/ch04_knn_distance_metrics.ipynb) | ✅ |
-| 5 | Linear Models and Regularization | [`ch05_linear_models_regularization.ipynb`](05-linear-models-and-regularization/ch05_linear_models_regularization.ipynb) | ✅ |
-| 6 | Advanced Logistic Regression and Extensions | | ⏳ |
-| 7 | Support Vector Machines and Kernel Methods | | ⏳ |
-| 8 | Tree-Based Algorithms and Ensemble Methods | | ⏳ |
-| 9 | Text Processing and Multiclass Classification | | ⏳ |
-| 10 | Clustering Techniques | | ⏳ |
-| 11 | Novelty and Outlier Detection | | ⏳ |
-| 12 | Cross-Validation and Model Evaluation Techniques | | ⏳ |
-| 13 | Deploying scikit-learn Models in Production | | ⏳ |
-
 ## Repository structure
 
 ```
