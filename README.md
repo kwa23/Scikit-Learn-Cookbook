@@ -5,7 +5,6 @@
 This repository is my submission for **Task 2 (Enrichment for Machine Learning Classes): "Code Reproduction + Theoretical Deep-Dive from scikit-learn Cookbook (O'Reilly)"**.
 For every chapter of the book there is one Jupyter notebook that (1) reproduces the book's code, (2) summarises the chapter and explains the theory behind each recipe, and (3) adds small experiments that put numbers behind the book's statements.
 
-> **Author:** `<Your Name>` · **Student ID:** `<NIM>` · **Course:** `<Course name>`
 
 ---
 
