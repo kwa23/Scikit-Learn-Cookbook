@@ -21,8 +21,14 @@ scikit-learn-Cookbook/
 │   └── ch03_dimensionality_reduction.ipynb
 ├── 04-distance-metrics-and-nearest-neighbors/
 │   └── ch04_knn_distance_metrics.ipynb
-└── 05-linear-models-and-regularization/
-    └── ch05_linear_models_regularization.ipynb
+├── 05-linear-models-and-regularization/
+│   └── ch05_linear_models_regularization.ipynb
+├── 06-advanced-logistic-regression-and-extensions/
+│   └── ch06_logistic_regression_extensions.ipynb
+├── 07-support-vector-machines-and-kernel-methods/
+│   └── ch07_svm_kernel_methods.ipynb
+└── 08-tree-based-algorithms-and-ensemble-methods/
+    └── ch08_tree_ensemble_methods.ipynb
 ```
 
 ## How each notebook is organised
@@ -52,8 +58,8 @@ Notes on running:
 
 - All datasets are generated locally or bundled with scikit-learn, so everything runs **offline**, with one exception: the closing exercise of Chapter 2 uses `fetch_california_housing()`, which downloads the data on first use. Those five cells have **no stored output**; run them once with internet access.
 - `seaborn` is only needed for the heatmaps in Chapter 4.
-- Approximate run time (fresh run, one machine): Chapter 3 ≈ 1.5 minutes, Chapter 4 ≈ 30 seconds, Chapter 5 ≈ 2.5 minutes (mostly t-SNE and the repeated cross-validation loops). Chapters 1 and 2 are quick.
-- Random seeds are fixed in every notebook (2024 in Chapters 2-4, as in the book; 123 in Chapter 5), so results are reproducible. Small numeric differences can still appear across library versions.
+- Approximate run time (fresh run, one machine): Chapter 3 ≈ 1.5 minutes, Chapter 4 ≈ 30 seconds, Chapter 5 ≈ 2.5 minutes (mostly t-SNE and the repeated cross-validation loops), Chapter 7 ≈ 1 minute (grid searches). Chapters 1, 2, 6 and 8 are quick.
+- Random seeds are fixed in every notebook (2024 in Chapters 2-4 and 6-8, as in the book; 123 in Chapter 5), so results are reproducible. Small numeric differences can still appear across library versions.
 
 ---
 
@@ -147,14 +153,63 @@ Notes on running:
 
 ---
 
+### Chapter 6: Advanced Logistic Regression and Extensions
+
+**In general.** Logistic regression is introduced properly here: not as a tool for predicting numbers, but for predicting class probabilities through the sigmoid function. The chapter then stretches the same idea in three directions — more than two classes, a penalty on the coefficients, and more than one label per sample — before closing with the metrics needed to judge whether any of it actually worked.
+
+**Topics covered (6 recipes):** overview of logistic regression and the sigmoid/log-odds link · multiclass classification (One-vs-Rest and multinomial/softmax) · regularization (Ridge L2, Lasso L1) · multilabel classification · model evaluation metrics · scikit-learn implementation notes.
+
+**What the notebook adds**
+- Plain logistic regression on Breast Cancer reaches 94.7 % accuracy out of the box; precision/recall/F1 are reported alongside accuracy to show why a single number is not enough for a medical-screening use case.
+- OvR and multinomial compared on Iris: 95.6 % vs 93.3 % accuracy — close enough to show that, on a well-separated dataset, the two multiclass strategies matter less than they would on harder data.
+- Ridge vs Lasso on Breast Cancer, both at `C=0.1`: Ridge keeps all 30 features and reaches 98.2 % accuracy; Lasso zeroes out 23 of the 30 coefficients (keeps only 7) and still reaches 96.5 %, visualised with coefficient-path plots across eight `C` values.
+- A multilabel classifier (one `LogisticRegression` per label, binary-relevance style) on a synthetic 5-label dataset: exact-match accuracy is only 34.0 %, far below the per-label F1-scores, which is used to show why exact-match is a harsh metric when several independent labels must all be right at once. A label co-occurrence heatmap is added on top of the book's code.
+- ROC/AUC on Breast Cancer: AUC ≈ 0.989, with a short "which metric when" guide (imbalanced data, ranking tasks, screening vs spam-filtering) that the book does not spell out explicitly.
+
+**📝 Note (scikit-learn compatibility):** the book builds OvR with `LogisticRegression(solver='liblinear')` directly. In current scikit-learn, `liblinear` no longer fits multiclass problems on its own and the `multi_class` parameter has been removed (multinomial/softmax is now the implicit default for ≥ 3 classes), so the notebook wraps the OvR model explicitly in `OneVsRestClassifier` to keep the recipe meaningful.
+
+---
+
+### Chapter 7: Support Vector Machines and Kernel Methods
+
+**In general.** Earlier chapters mostly used data that is easy to separate. This chapter admits that real boundaries are rarely clean and introduces SVMs: find the hyperplane with the widest margin, and if the data is not linearly separable, use a kernel to make it look as if it were — in a higher-dimensional space.
+
+**Topics covered (5 recipes):** introduction to SVMs and the hyperplane/margin/support-vector idea · kernel functions (linear, polynomial, RBF) and the kernel trick · tuning SVM parameters (`C`, `degree`, `gamma`) with grid search · SVMs in high-dimensional ("wide") data · evaluating SVM models.
+
+**What the notebook adds**
+- A linear-kernel SVM on Iris reaches 93.3 % accuracy; an RBF-kernel `SVR` regression example is included alongside the classifier (MSE ≈ 0.204) so both SVM tasks from the book are covered side by side.
+- Linear, polynomial and RBF kernels compared on the same split, plus a 2-feature decision-boundary plot for all three kernels in one figure, to make the (sometimes subtle) differences between kernels visible rather than just numeric.
+- Grid search over `C`, `kernel` and `degree`: best cross-validation score 0.990, but test accuracy lands back at 0.933 — used to point out that a higher CV score does not automatically mean a higher held-out score, especially on a small, easy dataset where many configurations are close together.
+- A `C`-only sweep (log-spaced, eight values) plotted against cross-validation score, showing a clear plateau: past a certain `C`, more regularization strength buys nothing.
+- A synthetic 1000-feature, 1000-sample dataset (`make_classification`) to test SVM in a genuinely wide regime: default-parameter accuracy is only 74.7 %, visibly weaker than on Iris, with a PCA projection to 2-D showing the two classes heavily overlapping at that reduced dimensionality.
+- ROC/AUC on Breast Cancer: AUC ≈ 0.984, noting that `probability=True` is required for `predict_proba` and makes fitting slightly slower (scikit-learn runs an internal calibration pass).
+
+---
+
+### Chapter 8: Tree-Based Algorithms and Ensemble Methods
+
+**In general.** Not every useful algorithm needs heavy mathematics. A decision tree just keeps splitting the data to make each resulting group purer, and is easy to read top to bottom. The chapter's real point, though, is that a single tree overfits easily, and that combining many of them — in parallel (bagging) or in sequence (boosting) — is usually worth the extra complexity.
+
+**Topics covered (5 recipes):** introduction to decision trees (Gini impurity, `max_depth`, `min_samples_split`/`leaf`, `max_features`) · random forests and bagging · gradient boosting machines · hyperparameter tuning for trees and ensembles · comparing ensemble methods (bagging vs boosting vs stacking).
+
+**What the notebook adds**
+- A single decision tree on Iris reaches 86.7 % accuracy; the full tree diagram is plotted and read node by node (split feature, Gini, sample proportion, majority class) rather than just quoting the final score.
+- Random forest (100 trees) lifts the same split to 91.1 % accuracy, with a feature-importance bar chart confirming petal length/width as the dominant features — consistent with what the single tree already implied.
+- Gradient boosting (1000 estimators, `learning_rate=0.2`) lands at exactly 86.7 %, matching the single tree rather than beating it — flagged explicitly as a sign that both models may be hitting the same performance ceiling on a dataset this simple, not that boosting "failed".
+- A 27-combination grid search over `n_estimators` × `max_depth` × `learning_rate` for GBM: best parameters give the same 86.7 % test accuracy as the untuned tree, with a heatmap of cross-validation scores showing a clear plateau once depth and estimator count pass a modest threshold.
+- Bagging, boosting and stacking (`StackingClassifier` with a logistic-regression meta-model) compared directly: random forest (91.1 %) narrowly beats both GBM and stacking (86.7 % each) on this split — used to make the point that a fancier ensemble (stacking) does not automatically beat a simpler one; it depends on how much the base models' errors actually complement each other.
+
+---
+
 ## Lessons that repeat across chapters
 
 1. **Fit on training data only, then transform everything else.** Put every data-dependent step (imputing, scaling, feature selection, LDA, PCA) inside a `Pipeline`; otherwise evaluation scores are inflated (Chapters 1-3).
-2. **Scale before distance- or penalty-based models** (k-NN, SVM, PCA, Ridge/Lasso), but not out of habit: trees do not need it, and Digits pixels are better left alone (Chapters 2-5).
+2. **Scale before distance- or penalty-based models** (k-NN, SVM, PCA, Ridge/Lasso), but not out of habit: trees and tree-based ensembles do not need it, and Digits pixels are better left alone (Chapters 2-5, 7-8).
 3. **Do not trust a single split.** Differences of one or two test samples were noise in several chapters; repeated cross-validation told the real story (Chapters 3-5).
-4. **Tune hyperparameters with cross-validation, and report an honest score.** `best_score_` is optimistic; a hand-picked `alpha` or *k* is an untuned hyperparameter (Chapters 1, 4, 5).
+4. **Tune hyperparameters with cross-validation, and report an honest score.** `best_score_` is optimistic; a hand-picked `alpha` or *k* is an untuned hyperparameter (Chapters 1, 4, 5). A higher CV score during grid search does not always translate into a higher held-out test score, especially on small, easy datasets (Chapters 7-8).
 5. **Check the data and the claim before the conclusion.** Several results in the book (a "best" model, an "improvement") shrink or vanish once the dataset, the scale of a parameter or the comparison is examined (Chapters 4-5).
 6. **Retaining variance, accuracy or R² is not the same as retaining signal**: always compare with a baseline and with the noise level.
+7. **More model complexity is not automatically better.** Multinomial vs OvR, more boosting rounds, or a stacked meta-model all showed diminishing or even flat returns once a simple baseline was already strong (Chapters 6-8).
 
 ## Reference
 
