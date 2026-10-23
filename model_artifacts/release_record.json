@@ -1,0 +1,8 @@
+{
+  "model_version": "1.0.0",
+  "status": "validated-example",
+  "validation_metric": "accuracy",
+  "validation_score": 0.66,
+  "sklearn_version": "1.9.1",
+  "notes": "Synthetic demonstration; validate on representative production data before deployment."
+}
